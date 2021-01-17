@@ -1,22 +1,33 @@
 import { Router } from 'express'
 import { v4 as uuid } from 'uuid'
+import { startOfHour, parseISO, isEqual } from 'date-fns'
 
-type RequestTypes = {
-    id?: string
+type AppointmentTypes = {
+    id: string
     provider: string
-    date: string
+    date: Date
 }
-type AppointmentTypes = RequestTypes[]
+
 const appointmentsRouter = Router()
 
-const appointments: AppointmentTypes = []
+const appointments: AppointmentTypes[] = []
 
 appointmentsRouter.post('/', (request, response) => {
-    const { provider, date }: RequestTypes = request.body
+    const { provider, date } = request.body
+    const parseDate = startOfHour(parseISO(date))
+    const findAppointmentsEquals = appointments.find((appointment) =>
+        isEqual(parseDate, appointment.date)
+    )
+
+    if (findAppointmentsEquals) {
+        return response.json({
+            message: 'This appointments is already booked'
+        })
+    }
     const appointment = {
         id: uuid(),
         provider,
-        date
+        date: parseDate
     }
     appointments.push(appointment)
     return response.json(appointment)
