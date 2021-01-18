@@ -21,6 +21,7 @@ appointmentsRouter.post('/', (request, response) => {
 })
 
 appointmentsRouter.get('/', (request, response) => {
-    return response.json(appointments)
+    const appointment = appointments.all()
+    return response.json(appointment)
 })
 export default appointmentsRouter
