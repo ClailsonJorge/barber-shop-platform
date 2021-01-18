@@ -1,6 +1,11 @@
 import { isEqual } from 'date-fns'
 import Appointment from '../models/appointment'
 
+interface CreateParams {
+    provider: string
+    date: Date
+}
+
 class AppointmentRepository {
     private appointments: Appointment[]
 
@@ -19,8 +24,8 @@ class AppointmentRepository {
         return findAppointmentsEquals || null
     }
 
-    public create(provider: string, date: Date): Appointment | null {
-        const appointment = new Appointment(provider, date)
+    public create({ provider, date }: CreateParams): Appointment | null {
+        const appointment = new Appointment({ provider, date })
         this.appointments.push(appointment)
         return appointment
     }
