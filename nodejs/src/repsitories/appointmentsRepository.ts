@@ -24,7 +24,7 @@ class AppointmentRepository {
         return findAppointmentsEquals || null
     }
 
-    public create({ provider, date }: CreateParams): Appointment | null {
+    public create({ provider, date }: CreateParams): Appointment {
         const appointment = new Appointment({ provider, date })
         this.appointments.push(appointment)
         return appointment
