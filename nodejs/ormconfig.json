@@ -5,6 +5,9 @@
     "username": "postgres",
     "password": "nal123",
     "database": "gostack_1",
+    "entities": [
+        "./src/models/*.ts"
+    ],
     "migrations": [
         "./src/database/migrations/*.ts"
     ],
