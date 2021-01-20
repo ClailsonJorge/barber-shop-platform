@@ -32,7 +32,8 @@
           ],
         "prettier/prettier": "error",
         "class-methods-use-this": "off",
-        "semi-style": "off"
+        "semi-style": "off",
+        "camelcase": "off"
     },
     "settings": {
         "import/resolver": {
