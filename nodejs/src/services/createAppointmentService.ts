@@ -5,11 +5,11 @@ import AppointmentsRepository from '../repsitories/appointmentsRepository'
 
 interface ExecuteParams {
     date: Date
-    provider: string
+    provider_id: string
 }
 
 export default class CreateAppointment {
-    async execute({ date, provider }: ExecuteParams): Promise<Appointment> {
+    async execute({ date, provider_id }: ExecuteParams): Promise<Appointment> {
         const appointmentsRepository = getCustomRepository(
             AppointmentsRepository
         )
@@ -22,7 +22,7 @@ export default class CreateAppointment {
             throw Error('This appointments is already booked')
         }
         const appointment = appointmentsRepository.create({
-            provider,
+            provider_id,
             date: parseDate
         })
         await appointmentsRepository.save(appointment)
