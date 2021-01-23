@@ -9,12 +9,6 @@ interface TokenPayload {
     sub: string
 }
 
-interface RequestParams extends Request {
-    user: {
-        id: string
-    }
-}
-
 export default function ensureAuthenticated(
     request: Request,
     response: Response,
