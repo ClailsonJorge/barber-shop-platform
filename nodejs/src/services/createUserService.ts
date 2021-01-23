@@ -1,5 +1,6 @@
 import { hash } from 'bcrypt'
 import { getRepository } from 'typeorm'
+import AppError from '../errors/appError'
 import User from '../models/user'
 
 interface ExecuteParams {
@@ -24,7 +25,7 @@ class CreateUserService {
             where: { email }
         })
         if (checkEmailExist) {
-            throw Error('This Email Address already registed.')
+            throw new AppError('This Email Address already registed.', 401)
         }
         const passwordHash = await hash(password, 8)
         const user: UserReturn = userModel.create({

@@ -3,6 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import uploadonfig from '../config/upload'
 import User from '../models/user'
+import AppError from '../errors/appError'
 
 interface ExecuteParams {
     user_id: string
@@ -22,7 +23,7 @@ export default class UpdateUserAvatarService {
         const user = await usersRepository.findOne(user_id)
 
         if (!user) {
-            throw new Error('Avatar can not be updated.')
+            throw new AppError('Avatar can not be updated.', 401)
         }
 
         if (user.avatar) {

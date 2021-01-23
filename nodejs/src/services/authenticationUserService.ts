@@ -2,6 +2,8 @@ import { sign } from 'jsonwebtoken'
 import { getRepository } from 'typeorm'
 import { compare } from 'bcrypt'
 import authConfig from '../config/auth'
+import AppError from '../errors/appError'
+
 import User from '../models/user'
 
 interface ExecuteParams {
@@ -29,11 +31,11 @@ class AuthenticateUserService {
         })
 
         if (!user) {
-            throw new Error('Incorrect email/password combination!')
+            throw new AppError('Incorrect email/password combination!', 401)
         }
 
         if (!compare(password, user.password)) {
-            throw new Error('Incorrect email/password combination!')
+            throw new AppError('Incorrect email/password combination!', 401)
         }
         const userReturn: UserReturn = user
 

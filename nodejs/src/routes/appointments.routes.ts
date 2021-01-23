@@ -20,7 +20,9 @@ appointmentsRouter.post('/', async (request, response) => {
         })
         return response.json(appointment)
     } catch (error) {
-        return response.status(400).json({ message: error.message })
+        return response
+            .status(error.statusCode)
+            .json({ message: error.message })
     }
 })
 
