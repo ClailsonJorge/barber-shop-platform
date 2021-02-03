@@ -1,17 +1,21 @@
 import React from 'react'
-import { FiLogIn, FiMail, FiLock, FiUser, FiArrowLeft } from 'react-icons/fi'
+import { Form } from '@unform/web'
+import { FiMail, FiLock, FiUser, FiArrowLeft } from 'react-icons/fi'
 import { Background, Container, Content } from './styles'
 import logoImg from '../../assets/LogoGobarber.svg'
 import Input from '../../Components/input'
 import Button from '../../Components/button'
 
 const SignUp: React.FC = () => {
+    const handleSubmit = (data: object): void => {
+        console.log(data)
+    }
     return (
         <Container>
             <Background />
             <Content>
                 <img src={logoImg} alt="GoBarber" />
-                <form>
+                <Form onSubmit={handleSubmit}>
                     <h1>Faça seu Cadastro</h1>
                     <Input
                         icon={FiUser}
@@ -32,7 +36,7 @@ const SignUp: React.FC = () => {
                         placeholder="Senha"
                     />
                     <Button type="submit">Cadastrar</Button>
-                </form>
+                </Form>
 
                 <a href="#teste">
                     <FiArrowLeft />

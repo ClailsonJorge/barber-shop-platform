@@ -1,29 +1,36 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
-export const Container = styled.div`
+interface ContainerProps {
+    focus: boolean
+    filled: boolean
+}
+
+export const Container = styled.div<ContainerProps>`
     display: flex;
     align-items: center;
     width: 100%;
     background: #232129;
     border-radius: 8px;
     height: 56px;
-    border: none;
+    border: 2px solid ${({ focus }) => (focus ? '#ff9000' : 'transparent')};
 
     & + div {
         margin-top: 8px;
     }
+
     input {
-        color: #f4ede8;
         background: transparent;
         border: none;
         flex: 1;
+        color: ${({ focus }) => (focus ? '#ff9000' : '#f4ede8')};
         &::placeholder {
             color: #666360;
         }
     }
 
     svg {
-        color: #f4ede8;
         margin: 0 16px;
+        color: ${({ focus, filled }) =>
+            focus || filled ? '#ff9000' : '#f4ede8'};
     }
 `
