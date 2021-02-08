@@ -1,8 +1,10 @@
 import styled from 'styled-components'
+import Tooltip from '../tooltip'
 
 interface ContainerProps {
     focus: boolean
     filled: boolean
+    isErrored: boolean
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -12,7 +14,10 @@ export const Container = styled.div<ContainerProps>`
     background: #232129;
     border-radius: 8px;
     height: 56px;
-    border: 2px solid ${({ focus }) => (focus ? '#ff9000' : 'transparent')};
+    border: 2px solid transparent;
+
+    border-color: ${({ isErrored }) => isErrored && '#c53030'};
+    border-color: ${({ focus }) => focus && '#ff9000'};
 
     & + div {
         margin-top: 8px;
@@ -32,5 +37,20 @@ export const Container = styled.div<ContainerProps>`
         margin: 0 16px;
         color: ${({ focus, filled }) =>
             focus || filled ? '#ff9000' : '#f4ede8'};
+    }
+`
+export const Error = styled(Tooltip)`
+    span {
+        width: 200px;
+        background: #c53030;
+        font-weight: 500;
+
+        ::before {
+            border-top-color: #c53030;
+        }
+    }
+
+    svg {
+        color: #c53030;
     }
 `
