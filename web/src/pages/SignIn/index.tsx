@@ -1,34 +1,44 @@
-import React, { useCallback, useRef } from 'react'
+import React, { useCallback, useRef, useContext } from 'react'
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi'
 import { Form } from '@unform/web'
 import * as Yup from 'yup'
 import { FormHandles } from '@unform/core'
 import { Background, Container, Content } from './styles'
+import { AuthContext } from '../../context/auth-context'
 import logoImg from '../../assets/LogoGobarber.svg'
 import Input from '../../Components/input'
 import Button from '../../Components/button'
 import getValidationErrors from '../../utils/getValidationErrors'
 
-const SignIn: React.FC = () => {
-    const formRef = useRef<FormHandles>(null)
-    const handleSubmit = useCallback(async (data: object) => {
-        try {
-            formRef.current?.setErrors({})
-            const schema = Yup.object().shape({
-                name: Yup.string().required('Name incorrect'),
-                email: Yup.string()
-                    .required('E-mail is necessary')
-                    .email('The email format is not correct.'),
-                password: Yup.string().required('Password is necessary.')
-            })
+interface HandleSubmitParams {
+    email: string
+    password: string
+}
 
-            await schema.validate(data, {
-                abortEarly: false
-            })
-        } catch (err) {
-            formRef.current?.setErrors(getValidationErrors(err))
-        }
-    }, [])
+const SignIn: React.FC = () => {
+    const { signIn } = useContext(AuthContext)
+    const formRef = useRef<FormHandles>(null)
+    const handleSubmit = useCallback(
+        async (data: HandleSubmitParams) => {
+            try {
+                formRef.current?.setErrors({})
+                const schema = Yup.object().shape({
+                    email: Yup.string()
+                        .required('E-mail is necessary')
+                        .email('The email format is not correct.'),
+                    password: Yup.string().required('Password is necessary.')
+                })
+
+                await schema.validate(data, {
+                    abortEarly: false
+                })
+                signIn(data)
+            } catch (err) {
+                formRef.current?.setErrors(getValidationErrors(err))
+            }
+        },
+        [signIn]
+    )
     return (
         <Container>
             <Content>
