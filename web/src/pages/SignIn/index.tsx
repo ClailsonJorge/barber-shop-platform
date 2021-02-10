@@ -1,10 +1,10 @@
-import React, { useCallback, useRef, useContext } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi'
 import { Form } from '@unform/web'
 import * as Yup from 'yup'
 import { FormHandles } from '@unform/core'
 import { Background, Container, Content } from './styles'
-import { AuthContext } from '../../context/auth-context'
+import { useAuth } from '../../context/auth-context'
 import logoImg from '../../assets/LogoGobarber.svg'
 import Input from '../../Components/input'
 import Button from '../../Components/button'
@@ -16,8 +16,9 @@ interface HandleSubmitParams {
 }
 
 const SignIn: React.FC = () => {
-    const { signIn } = useContext(AuthContext)
+    const { signIn } = useAuth()
     const formRef = useRef<FormHandles>(null)
+
     const handleSubmit = useCallback(
         async (data: HandleSubmitParams) => {
             try {
