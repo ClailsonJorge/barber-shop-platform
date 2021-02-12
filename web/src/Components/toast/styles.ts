@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components'
 
 interface ToastProps {
     type?: 'sucess' | 'info' | 'error'
+    hasDescription: boolean
 }
 
 export const Container = styled.div`
@@ -66,4 +67,14 @@ export const Toast = styled.div<ToastProps>`
         border: none;
         color: inherit;
     }
+
+    ${({ hasDescription }) =>
+        !hasDescription &&
+        css`
+            align-items: center;
+
+            svg {
+                margin-top: 0;
+            }
+        `}
 `

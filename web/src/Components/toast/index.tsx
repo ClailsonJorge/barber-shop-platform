@@ -5,7 +5,7 @@ import { Container, Toast } from './styles'
 const ToastCompanent: React.FC = () => {
     return (
         <Container>
-            <Toast>
+            <Toast hasDescription>
                 <FiAlertCircle size={20} />
 
                 <div>
@@ -19,21 +19,18 @@ const ToastCompanent: React.FC = () => {
                 </button>
             </Toast>
 
-            <Toast type="error">
+            <Toast type="error" hasDescription={false}>
                 <FiAlertCircle size={20} />
 
                 <div>
                     <strong>Ocorreu um erro inesperado.</strong>
-                    <p>
-                        Descrição do Erro que deve ser condicional sua aparição
-                    </p>
                 </div>
                 <button type="button">
                     <FiXCircle size={18} />
                 </button>
             </Toast>
 
-            <Toast type="sucess">
+            <Toast type="sucess" hasDescription>
                 <FiAlertCircle size={20} />
 
                 <div>
