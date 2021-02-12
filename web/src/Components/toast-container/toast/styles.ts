@@ -1,23 +1,16 @@
 import styled, { css } from 'styled-components'
 
-interface ToastProps {
-    type?: 'sucess' | 'info' | 'error'
+interface ContainerProps {
+    type?: 'success' | 'info' | 'error'
     hasDescription: boolean
 }
 
-export const Container = styled.div`
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 30px;
-    overflow: hidden;
-`
 const toastStyles = {
     error: css`
         background: #fddede;
         color: #c53030;
     `,
-    sucess: css`
+    success: css`
         background: #e6fffa;
         color: #2e656a;
     `,
@@ -26,7 +19,7 @@ const toastStyles = {
         color: #3172b7;
     `
 }
-export const Toast = styled.div<ToastProps>`
+export const Container = styled.div<ContainerProps>`
     width: 360px;
     display: flex;
     padding: 16px;
