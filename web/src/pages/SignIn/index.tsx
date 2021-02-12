@@ -9,6 +9,7 @@ import logoImg from '../../assets/LogoGobarber.svg'
 import Input from '../../Components/input'
 import Button from '../../Components/button'
 import getValidationErrors from '../../utils/getValidationErrors'
+import { useToast } from '../../hooks/toast'
 
 interface HandleSubmitParams {
     email: string
@@ -17,6 +18,7 @@ interface HandleSubmitParams {
 
 const SignIn: React.FC = () => {
     const { signIn } = useAuth()
+    const { addToast } = useToast()
     const formRef = useRef<FormHandles>(null)
 
     const handleSubmit = useCallback(
@@ -33,14 +35,20 @@ const SignIn: React.FC = () => {
                 await schema.validate(data, {
                     abortEarly: false
                 })
-                signIn(data)
+                await signIn(data)
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     formRef.current?.setErrors(getValidationErrors(err))
+                    return
                 }
+                addToast({
+                    type: 'error',
+                    title: 'Ocorreu um Error',
+                    description: 'teste toast de Erro'
+                })
             }
         },
-        [signIn]
+        [signIn, addToast]
     )
     return (
         <Container>
