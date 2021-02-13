@@ -1,6 +1,18 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { shade } from 'polished'
 import imgBackground from '../../assets/gobarber-background.svg'
+
+const animationContent = keyframes`
+    from {
+        transform: translateX(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+`
 
 export const Container = styled.div`
     display: flex;
@@ -17,6 +29,7 @@ export const Content = styled.div`
     align-items: center;
     width: 100%;
     max-width: 700px;
+    animation: ${animationContent} 1s;
 
     form {
         margin-top: 80px;

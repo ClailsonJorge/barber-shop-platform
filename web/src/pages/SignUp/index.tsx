@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 import { Form } from '@unform/web'
 import { FiMail, FiLock, FiUser, FiArrowLeft } from 'react-icons/fi'
@@ -61,10 +62,10 @@ const SignUp: React.FC = () => {
                     <Button type="submit">Cadastrar</Button>
                 </Form>
 
-                <a href="#teste">
+                <Link to="/">
                     <FiArrowLeft />
                     Voltar para o Login
-                </a>
+                </Link>
             </Content>
         </Container>
     )
