@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import * as Yup from 'yup'
 import { Form } from '@unform/web'
 import { FiMail, FiLock, FiUser, FiArrowLeft } from 'react-icons/fi'
@@ -9,30 +9,60 @@ import logoImg from '../../assets/LogoGobarber.svg'
 import Input from '../../Components/input'
 import Button from '../../Components/button'
 import getValidationErrors from '../../utils/getValidationErrors'
+import api from '../../services/api-client'
+import { useToast } from '../../hooks/toast'
+
+interface SignUpData {
+    name: string
+    email: string
+    password: string
+}
 
 const SignUp: React.FC = () => {
+    const history = useHistory()
+    const { addToast } = useToast()
     const formRef = useRef<FormHandles>(null)
-    const handleSubmit = useCallback(async (data: object) => {
-        try {
-            formRef.current?.setErrors({})
-            const schema = Yup.object().shape({
-                name: Yup.string().required('Name incorrect'),
-                email: Yup.string()
-                    .required('E-mail is necessary')
-                    .email('The email format is not correct.'),
-                password: Yup.string().min(
-                    6,
-                    'Is necessary at least 6 characters.'
-                )
-            })
+    const handleSubmit = useCallback(
+        async (data: SignUpData) => {
+            try {
+                formRef.current?.setErrors({})
+                const schema = Yup.object().shape({
+                    name: Yup.string().required('Name incorrect'),
+                    email: Yup.string()
+                        .required('E-mail is necessary')
+                        .email('The email format is not correct.'),
+                    password: Yup.string().min(
+                        6,
+                        'Is necessary at least 6 characters.'
+                    )
+                })
 
-            await schema.validate(data, {
-                abortEarly: false
-            })
-        } catch (err) {
-            formRef.current?.setErrors(getValidationErrors(err))
-        }
-    }, [])
+                await schema.validate(data, {
+                    abortEarly: false
+                })
+
+                await api.post('/users', data)
+                addToast({
+                    type: 'success',
+                    title: 'Cadastro Realizado com Sucesso!',
+                    description: 'Já está pronto para realizar Login'
+                })
+                history.push('/')
+            } catch (err) {
+                if (err instanceof Yup.ValidationError) {
+                    formRef.current?.setErrors(getValidationErrors(err))
+                    return
+                }
+                addToast({
+                    type: 'error',
+                    title: 'Ocorreu um Error',
+                    description:
+                        'Erro ao tentar cadastrar Usuário, tente Novamente'
+                })
+            }
+        },
+        [addToast, history]
+    )
 
     return (
         <Container>
