@@ -4,7 +4,7 @@ import { TextInput } from 'react-native'
 
 export const Container = styled.View`
     width: 100%;
-    height: 64px;
+    height: 50px;
 
     background: #232129;
     border-radius: 12px;
