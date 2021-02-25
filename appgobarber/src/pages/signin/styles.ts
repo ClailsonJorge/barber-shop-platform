@@ -39,7 +39,7 @@ export const CreateAccount = styled.TouchableOpacity<CreateAccountProps>`
     flex-direction: row;
     width: 100%;
     height: 54px;
-    border-top-width: ${({keyboard}) => keyboard ? '0' : '1'}px;
+    border-top-width: 1px;
     border-top-color: #232129;
 
     justify-content: center;
