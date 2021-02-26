@@ -1,24 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { Form } from '@unform/mobile'
+import { FormHandles } from '@unform/core'
 import Icon from 'react-native-vector-icons/Feather'
 import logo from '../../assets/logo.png'
 import Button from '../../components/button'
-import Input from '../../components/input'
+import Input from '../../components/input';
 
 import { Container, Title, ForgotPassword, ForgotPasswordText, CreateAccount, CreateAccountText } from './styles'
 
 const SignIn: React.FC = () => {
     const [keyboard, setKeyboard] = useState(false)
+    const formRef = useRef<FormHandles>(null)
     const navigation = useNavigation()
 
-    const handleKeyBoardShow = () => {
+    const handleKeyBoardShow = useCallback(() => {
         setKeyboard(true);
-    }
+    }, [keyboard])
 
-    const handleKeyBoardHide = () => {
+    const handleKeyBoardHide = useCallback(() => {
         setKeyboard(false);
-    }
+    }, [keyboard])
+
+    const handleSubmit = useCallback((data:object) => {
+        console.log(data)
+    }, [])
 
     useEffect(()=>{
         Keyboard.addListener('keyboardDidShow', handleKeyBoardShow)
@@ -37,10 +44,11 @@ const SignIn: React.FC = () => {
                     <Container>
                         <Image source={logo} />
                         <Title>Faça seu Login</Title>
-                        <Input name="email" icon="mail" placeholder="E-mail"/>
-                        <Input name="password" icon="lock" placeholder="Senha"/>
-                        <Button>Entrar</Button>
-
+                        <Form ref={formRef} onSubmit={handleSubmit}>
+                            <Input name="email" icon="mail" placeholder="E-mail"/>
+                            <Input name="password" icon="lock" placeholder="Senha"/>
+                            <Button onPress={() => {formRef.current?.submitForm()}}>Entrar</Button>
+                        </Form>
                         <ForgotPassword>
                             <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
                         </ForgotPassword>
