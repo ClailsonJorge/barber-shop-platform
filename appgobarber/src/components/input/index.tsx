@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import { TextInputProps } from 'react-native'
 import { useField } from '@unform/core'
 import {Container, InputText, Icon } from './styles'
@@ -11,10 +11,21 @@ interface InputProps extends TextInputProps {
 interface InputValueReference {
     value: string
 }
-const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
+
+interface InputRef {
+    focus(): void
+}
+
+const Input: React.ForwardRefRenderFunction<InputRef, InputProps> = ({ name, icon, ...rest }, ref) => {
     const inputElementRef = useRef<any>(null)
     const { registerField, fieldName, error, defaultValue = ''} = useField(name)
     const inputValueRef = useRef<InputValueReference>({ value: defaultValue })
+
+    useImperativeHandle(ref, () => ({
+        focus() {
+            inputElementRef.current.focus()
+        }
+    }))
 
     useEffect(()=>{
         registerField<string>({
@@ -31,10 +42,12 @@ const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
             }
         })
     }, [fieldName, registerField])
+
     return (
         <Container>
             <Icon name={icon} size={20} color="#666360" />
             <InputText
+             ref={inputElementRef}
              placeholderTextColor="#666360"
              defaultValue={defaultValue}
              onChangeText={(value) => {inputValueRef.current.value = value}}
@@ -44,4 +57,4 @@ const Input: React.FC<InputProps> = ({ name, icon, ...rest }) => {
     )
 }
 
-export default Input
+export default forwardRef(Input)

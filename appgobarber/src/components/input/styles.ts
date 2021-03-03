@@ -18,6 +18,7 @@ export const Container = styled.View`
 export const InputText = styled(TextInput)`
     flex: 1;
     font-size: 20px;
+    color: #fff;
 `
 export const Icon = styled(FeatherIcon)`
     margin: 0 18px;

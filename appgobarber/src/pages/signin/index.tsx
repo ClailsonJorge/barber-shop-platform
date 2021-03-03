@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard } from 'react-native'
+import React, { useEffect, useState, useCallback, useRef, forwardRef } from 'react'
+import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard, TextInput } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
@@ -14,6 +14,7 @@ const SignIn: React.FC = () => {
     const [keyboard, setKeyboard] = useState(false)
     const formRef = useRef<FormHandles>(null)
     const navigation = useNavigation()
+    const passwordInputRef = useRef<TextInput>(null)
 
     const handleKeyBoardShow = useCallback(() => {
         setKeyboard(true);
@@ -45,8 +46,27 @@ const SignIn: React.FC = () => {
                         <Image source={logo} />
                         <Title>Faça seu Login</Title>
                         <Form ref={formRef} onSubmit={handleSubmit}>
-                            <Input name="email" icon="mail" placeholder="E-mail"/>
-                            <Input name="password" icon="lock" placeholder="Senha"/>
+                            <Input
+                             keyboardType="email-address"
+                             autoCapitalize="none"
+                             autoFocus autoCorrect={false}
+                             name="email" icon="mail"
+                             placeholder="E-mail"
+                             returnKeyType="next"
+                             onSubmitEditing={()=>{
+                                passwordInputRef.current?.focus()
+                             }}
+                            />
+                            <Input
+                             ref={passwordInputRef}
+                             secureTextEntry
+                             returnKeyType="send"
+                             name="password" icon="lock"
+                             placeholder="Senha"
+                             onSubmitEditing={()=>{
+                                formRef.current?.submitForm()
+                            }}
+                            />
                             <Button onPress={() => {formRef.current?.submitForm()}}>Entrar</Button>
                         </Form>
                         <ForgotPassword>
