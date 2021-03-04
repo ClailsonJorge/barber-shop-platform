@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/Feather'
 import logo from '../../assets/logo.png'
 import Button from '../../components/button'
 import Input from '../../components/input';
+import { useAuth } from '../../hooks/auth'
 
 import { Container, Title, ForgotPassword, ForgotPasswordText, CreateAccount, CreateAccountText } from './styles'
 import getValidationErrors from '../../utils/getValidationErrors'
@@ -23,6 +24,7 @@ const SignIn: React.FC = () => {
     const formRef = useRef<FormHandles>(null)
     const navigation = useNavigation()
     const passwordInputRef = useRef<TextInput>(null)
+    const { signIn, user } = useAuth()
 
     const handleKeyBoardShow = useCallback(() => {
         setKeyboard(true);
@@ -34,6 +36,7 @@ const SignIn: React.FC = () => {
 
     const handleSubmit = useCallback(
             async (data: HandleSubmitParams) => {
+                console.log(user)
                 try {
                     formRef.current?.setErrors({})
                     const schema = Yup.object().shape({
@@ -46,8 +49,7 @@ const SignIn: React.FC = () => {
                     await schema.validate(data, {
                         abortEarly: false
                     })
-                    // await signIn(data)
-                    // history.push('/dashboard')
+                    await signIn(data)
                 } catch (err) {
                     if (err instanceof Yup.ValidationError) {
                         formRef.current?.setErrors(getValidationErrors(err))

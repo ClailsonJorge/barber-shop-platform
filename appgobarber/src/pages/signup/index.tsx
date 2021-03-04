@@ -1,16 +1,25 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
+import {
+    Image,
+    ScrollView,
+    KeyboardAvoidingView,
+    Platform, Keyboard,
+    TextInput,
+    Alert
+} from 'react-native'
 import * as Yup from 'yup'
-import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard, TextInput, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
+
 import Icon from 'react-native-vector-icons/Feather'
 import logo from '../../assets/logo.png'
 import Button from '../../components/button'
 import Input from '../../components/input'
+import getValidationErrors from '../../utils/getValidationErrors'
+import api from '../../services/api'
 
 import { Container, Title, CreateAccount, CreateAccountText } from './styles'
-import getValidationErrors from '../../utils/getValidationErrors'
 
 
 interface SignUpData {
@@ -52,8 +61,9 @@ const SignIn: React.FC = () => {
                     abortEarly: false
                 })
 
-                // await api.post('/users', data)
-                // history.push('/')
+                await api.post('/users', data)
+                Alert.alert('Cadastro realizado com sucesso', 'Você já pode realizar o login')
+                navigation.goBack()
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     formRef.current?.setErrors(getValidationErrors(err))
