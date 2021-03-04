@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useCallback, useRef, forwardRef } from 'react'
-import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard, TextInput } from 'react-native'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import * as Yup from 'yup'
+import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard, TextInput, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
@@ -9,6 +10,13 @@ import Button from '../../components/button'
 import Input from '../../components/input';
 
 import { Container, Title, ForgotPassword, ForgotPasswordText, CreateAccount, CreateAccountText } from './styles'
+import getValidationErrors from '../../utils/getValidationErrors'
+
+
+interface HandleSubmitParams {
+    email: string
+    password: string
+}
 
 const SignIn: React.FC = () => {
     const [keyboard, setKeyboard] = useState(false)
@@ -24,9 +32,32 @@ const SignIn: React.FC = () => {
         setKeyboard(false);
     }, [keyboard])
 
-    const handleSubmit = useCallback((data:object) => {
-        console.log(data)
-    }, [])
+    const handleSubmit = useCallback(
+            async (data: HandleSubmitParams) => {
+                try {
+                    formRef.current?.setErrors({})
+                    const schema = Yup.object().shape({
+                        email: Yup.string()
+                            .required('E-mail is necessary')
+                            .email('The email format is not correct.'),
+                        password: Yup.string().required('Password is necessary.')
+                    })
+
+                    await schema.validate(data, {
+                        abortEarly: false
+                    })
+                    // await signIn(data)
+                    // history.push('/dashboard')
+                } catch (err) {
+                    if (err instanceof Yup.ValidationError) {
+                        formRef.current?.setErrors(getValidationErrors(err))
+                        return
+                    }
+                    Alert.alert('Ocorreu um Error', 'teste toast de Erro')
+                }
+            },
+            []
+        )
 
     useEffect(()=>{
         Keyboard.addListener('keyboardDidShow', handleKeyBoardShow)

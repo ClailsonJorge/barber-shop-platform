@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard, TextInput } from 'react-native'
+import * as Yup from 'yup'
+import { Image, ScrollView, KeyboardAvoidingView, Platform, Keyboard, TextInput, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Form } from '@unform/mobile'
 import { FormHandles } from '@unform/core'
@@ -9,7 +10,14 @@ import Button from '../../components/button'
 import Input from '../../components/input'
 
 import { Container, Title, CreateAccount, CreateAccountText } from './styles'
+import getValidationErrors from '../../utils/getValidationErrors'
 
+
+interface SignUpData {
+    name: string
+    email: string
+    password: string
+}
 const SignIn: React.FC = () => {
     const [keyboard, setKeyboard] = useState(false)
     const formRef = useRef<FormHandles>(null)
@@ -25,9 +33,37 @@ const SignIn: React.FC = () => {
         setKeyboard(false);
     }, [keyboard])
 
-    const handleSubmit = useCallback((data:object) => {
-        console.log(data)
-    }, [])
+    const handleSubmit = useCallback(
+        async (data: SignUpData) => {
+            try {
+                formRef.current?.setErrors({})
+                const schema = Yup.object().shape({
+                    name: Yup.string().required('Name incorrect'),
+                    email: Yup.string()
+                        .required('E-mail is necessary')
+                        .email('The email format is not correct.'),
+                    password: Yup.string().min(
+                        6,
+                        'Is necessary at least 6 characters.'
+                    )
+                })
+
+                await schema.validate(data, {
+                    abortEarly: false
+                })
+
+                // await api.post('/users', data)
+                // history.push('/')
+            } catch (err) {
+                if (err instanceof Yup.ValidationError) {
+                    formRef.current?.setErrors(getValidationErrors(err))
+                    return
+                }
+                Alert.alert('Ocorreu um Error', 'Erro ao tentar cadastrar Usuário, tente Novamente')
+            }
+        },
+        []
+    )
 
     useEffect(()=>{
         Keyboard.addListener('keyboardDidShow', handleKeyBoardShow)
