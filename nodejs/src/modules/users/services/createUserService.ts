@@ -1,7 +1,7 @@
 import { hash } from 'bcrypt'
 import { getRepository } from 'typeorm'
-import AppError from '../errors/appError'
-import User from '../models/user'
+import AppError from '@shared/errors/appError'
+import User from '../infra/typeorm/entities/user'
 
 interface ExecuteParams {
     name: string

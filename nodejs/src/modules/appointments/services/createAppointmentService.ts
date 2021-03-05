@@ -1,8 +1,8 @@
 import { startOfHour } from 'date-fns'
 import { getCustomRepository } from 'typeorm'
-import Appointment from '../models/appointment'
-import AppointmentsRepository from '../repsitories/appointmentsRepository'
-import AppError from '../errors/appError'
+import Appointment from '@modules/appointments/infra/typeorm/entities/appointment'
+import AppError from '@shared/errors/appError'
+import AppointmentsRepository from '../repositories/appointmentsRepository'
 
 interface ExecuteParams {
     date: Date

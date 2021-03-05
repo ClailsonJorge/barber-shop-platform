@@ -1,9 +1,9 @@
 import { getRepository } from 'typeorm'
 import path from 'path'
 import fs from 'fs'
-import uploadonfig from '../config/upload'
-import User from '../models/user'
-import AppError from '../errors/appError'
+import uploadonfig from '@config/upload'
+import AppError from '@shared/errors/appError'
+import User from '../infra/typeorm/entities/user'
 
 interface ExecuteParams {
     user_id: string
