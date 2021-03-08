@@ -1,26 +1,27 @@
-import { getRepository } from 'typeorm'
 import path from 'path'
 import fs from 'fs'
 import uploadonfig from '@config/upload'
 import AppError from '@shared/errors/appError'
 import User from '../infra/typeorm/entities/user'
+import IUsersRepository from '../infra/repositories/IUsersRepository'
 
-interface ExecuteParams {
+interface IExecuteParams {
     user_id: string
     avatarFileName: string
 }
 
-interface UserResponse extends Omit<User, 'password'> {
+interface IUserResponse extends Omit<User, 'password'> {
     password?: string
 }
 
 export default class UpdateUserAvatarService {
+    constructor(private userRepository: IUsersRepository) {}
+
     public async execute({
         user_id,
         avatarFileName
-    }: ExecuteParams): Promise<UserResponse> {
-        const usersRepository = getRepository(User)
-        const user = await usersRepository.findOne(user_id)
+    }: IExecuteParams): Promise<IUserResponse> {
+        const user = await this.userRepository.findById(user_id)
 
         if (!user) {
             throw new AppError('Avatar can not be updated.', 401)
@@ -34,8 +35,8 @@ export default class UpdateUserAvatarService {
             }
         }
         user.avatar = avatarFileName
-        await usersRepository.save(user)
-        const userResponse: UserResponse = user
+        await this.userRepository.save(user)
+        const userResponse: IUserResponse = user
         delete userResponse.password
         return userResponse
     }
