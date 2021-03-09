@@ -1,4 +1,5 @@
 import { hash } from 'bcrypt'
+import { inject, injectable } from 'tsyringe'
 import AppError from '@shared/errors/appError'
 import User from '../infra/typeorm/entities/user'
 import ICreateUserDto from '../dtos/ICreateUserDto'
@@ -8,8 +9,12 @@ interface IExecuteReturn extends Omit<User, 'password'> {
     password?: string
 }
 
+@injectable()
 class CreateUserService {
-    constructor(private userRepository: IUsersRepository) {}
+    constructor(
+        @inject('UsersRepository')
+        private userRepository: IUsersRepository
+    ) {}
 
     public async execute({
         name,

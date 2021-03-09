@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import './typeorm'
+import '../container'
 import cors from 'cors'
 import express, { NextFunction, Request, Response } from 'express'
 import 'express-async-errors'

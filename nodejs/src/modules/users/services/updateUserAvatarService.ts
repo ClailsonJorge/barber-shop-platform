@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import { inject, injectable } from 'tsyringe'
 import uploadonfig from '@config/upload'
 import AppError from '@shared/errors/appError'
 import User from '../infra/typeorm/entities/user'
@@ -14,8 +15,12 @@ interface IUserResponse extends Omit<User, 'password'> {
     password?: string
 }
 
+@injectable()
 export default class UpdateUserAvatarService {
-    constructor(private userRepository: IUsersRepository) {}
+    constructor(
+        @inject('UsersRepository')
+        private userRepository: IUsersRepository
+    ) {}
 
     public async execute({
         user_id,

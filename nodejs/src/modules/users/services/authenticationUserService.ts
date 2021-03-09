@@ -1,5 +1,6 @@
 import { sign } from 'jsonwebtoken'
 import { compare } from 'bcrypt'
+import { inject, injectable } from 'tsyringe'
 import authConfig from '@config/auth'
 import AppError from '@shared/errors/appError'
 
@@ -16,8 +17,12 @@ interface IAuthenticateReturn {
     token: string
 }
 
+@injectable()
 class AuthenticateUserService {
-    constructor(private userRepository: IUsersRepository) {}
+    constructor(
+        @inject('UsersRepository')
+        private userRepository: IUsersRepository
+    ) {}
 
     public async execute({
         email,
