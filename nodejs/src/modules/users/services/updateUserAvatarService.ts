@@ -1,10 +1,8 @@
-import path from 'path'
-import fs from 'fs'
 import { inject, injectable } from 'tsyringe'
-import uploadonfig from '@config/upload'
 import AppError from '@shared/errors/appError'
+import IStorageProvider from '@shared/container/providers/models/IStorageProvider'
 import User from '../infra/typeorm/entities/user'
-import IUsersRepository from '../infra/repositories/IUsersRepository'
+import IUsersRepository from '../repositories/IUsersRepository'
 
 interface IExecuteParams {
     user_id: string
@@ -19,7 +17,10 @@ interface IUserResponse extends Omit<User, 'password'> {
 export default class UpdateUserAvatarService {
     constructor(
         @inject('UsersRepository')
-        private userRepository: IUsersRepository
+        private userRepository: IUsersRepository,
+
+        @inject('diskStorageProvider')
+        private diskStorage: IStorageProvider
     ) {}
 
     public async execute({
@@ -33,13 +34,12 @@ export default class UpdateUserAvatarService {
         }
 
         if (user.avatar) {
-            const userAvatarPath = path.join(uploadonfig.directory, user.avatar)
-            const avatarCheckExist = await fs.promises.stat(userAvatarPath)
-            if (avatarCheckExist) {
-                await fs.promises.unlink(userAvatarPath)
-            }
+            await this.diskStorage.deleteFile(user.avatar)
         }
-        user.avatar = avatarFileName
+
+        const filePath = await this.diskStorage.saveFile(avatarFileName)
+
+        user.avatar = filePath
         await this.userRepository.save(user)
         const userResponse: IUserResponse = user
         delete userResponse.password
