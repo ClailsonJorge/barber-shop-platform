@@ -1,6 +1,6 @@
 import AppError from '@shared/errors/appError'
-import faker, { name } from 'faker'
-import FakerDiskStorageProvider from '@shared/container/providers/fakes/fakerDiskStorageProvider'
+import faker from 'faker'
+import FakerDiskStorageProvider from '@shared/container/providers/diskStorage/fakes/fakerDiskStorageProvider'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import CreateUserService from './createUserService'
@@ -22,7 +22,7 @@ describe('Update user avatar', () => {
 
         const userData = {
             name: faker.name.firstName(),
-            email: `${name}.${faker.internet.email()}`,
+            email: faker.internet.email(),
             password: faker.internet.password()
         }
 
@@ -31,7 +31,7 @@ describe('Update user avatar', () => {
         const avatarFileName = faker.internet.avatar()
 
         const userUpdated = await updateUserAvatarFileName.execute({
-            user_id: user.id,
+            user_id: user?.id ? user.id : '1',
             avatarFileName
         })
 

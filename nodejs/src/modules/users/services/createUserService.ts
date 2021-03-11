@@ -23,7 +23,7 @@ class CreateUserService {
         name,
         email,
         password
-    }: ICreateUserDto): Promise<IExecuteReturn> {
+    }: ICreateUserDto): Promise<IExecuteReturn | undefined> {
         const checkEmailExist = await this.userRepository.findByEmail(email)
 
         if (checkEmailExist) {
@@ -37,14 +37,16 @@ class CreateUserService {
             password: passwordHash
         })
 
-        return {
-            name: user.name,
-            email: user.email,
-            id: user.id,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-            avatar: user.avatar
-        }
+        return user
+            ? {
+                  name: user.name,
+                  email: user.email,
+                  id: user.id,
+                  created_at: user.created_at,
+                  updated_at: user.updated_at,
+                  avatar: user.avatar
+              }
+            : undefined
     }
 }
 
