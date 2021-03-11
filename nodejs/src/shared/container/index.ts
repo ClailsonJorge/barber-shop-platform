@@ -7,7 +7,7 @@ import IUsersRepository from '@modules/users/repositories/IUsersRepository'
 import UsersRepository from '@modules/users/infra/typeorm/repositories/usersRepository'
 
 import '@modules/users/providers/hashProvider'
-import './providers'
+import './providers/diskStorage'
 
 container.registerSingleton<IAppointmentsRepository>(
     'AppointmentsRepository',

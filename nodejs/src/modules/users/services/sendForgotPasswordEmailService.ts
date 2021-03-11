@@ -1,3 +1,4 @@
+import { inject, injectable } from 'tsyringe'
 import IMailProvider from '@shared/container/providers/mailProvider/models/IMailProvider'
 import IUsersRepository from '../repositories/IUsersRepository'
 
@@ -5,9 +6,13 @@ interface IExecuteProps {
     email: string
 }
 
+@injectable()
 class SendForgotPasswordEmail {
     constructor(
+        @inject('UsersRepository')
         private userRepository: IUsersRepository,
+
+        @inject('SendEmailProvider')
         private sendEmailProvider: IMailProvider
     ) {}
 
