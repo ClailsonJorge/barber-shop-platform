@@ -1,5 +1,6 @@
 import FakerSendEmailProvider from '@shared/container/providers/mailProvider/fakes/fakerSendEmailProvider'
 import faker from 'faker'
+import AppError from '@shared/errors/appError'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import FakerUserTokenRepository from '../repositories/fakes/fakerUserTokenRepository'
@@ -58,5 +59,30 @@ describe('ResetPasswordService', () => {
         const userUpdated = await fakerUsersRepository.findById(user?.id || '1')
         const passwordOk = hash.compare(password, userUpdated?.password || '1')
         expect(passwordOk).toBeTruthy()
+    })
+
+    it('Should not be able to change password if non-exist token', async () => {
+        const user_id = faker.random.uuid()
+        const password = faker.internet.password()
+        const promise = resetPasswordService.execute({
+            user_id,
+            password
+        })
+
+        await expect(promise).rejects.toBeInstanceOf(AppError)
+    })
+
+    it('Should not be able to change password if non-exist user', async () => {
+        const user_id = faker.random.uuid()
+        const password = faker.internet.password()
+
+        jest.spyOn(
+            fakerUserTokenRepository,
+            'findUserTokenById'
+        ).mockImplementationOnce(async () => faker.random.uuid())
+
+        const promise = resetPasswordService.execute({ user_id, password })
+
+        await expect(promise).rejects.toBeInstanceOf(AppError)
     })
 })
