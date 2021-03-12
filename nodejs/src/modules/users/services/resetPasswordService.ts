@@ -16,11 +16,9 @@ export default class ResetPasswordService {
     ) {}
 
     public async execute({ user_id, password }: IResetParams): Promise<void> {
-        const userToken = await this.userTokenRepository.findUserTokenById(
-            user_id
-        )
+        const token = await this.userTokenRepository.findUserTokenById(user_id)
 
-        if (!userToken) {
+        if (!token) {
             throw new AppError('It does not valid token.')
         }
 
