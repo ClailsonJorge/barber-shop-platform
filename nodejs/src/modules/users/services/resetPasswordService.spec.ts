@@ -8,6 +8,7 @@ import CreateUserService from './createUserService'
 import SendForgotPasswordEmail from './sendForgotPasswordEmailService'
 import IUserData from './utils/models/IUserData'
 import ResetPasswordService from './resetPasswordService'
+import UserToken from '../infra/typeorm/entities/userToken'
 
 let fakerUsersRepository: FakerUsersRepository
 let fakerUserTokenRepository: FakerUserTokenRepository
@@ -79,9 +80,43 @@ describe('ResetPasswordService', () => {
         jest.spyOn(
             fakerUserTokenRepository,
             'findUserTokenById'
-        ).mockImplementationOnce(async () => faker.random.uuid())
+        ).mockImplementationOnce(async () => ({
+            id: faker.random.uuid(),
+            token: faker.random.uuid(),
+            user_id,
+            created_at: new Date(),
+            updated_at: new Date()
+        }))
 
         const promise = resetPasswordService.execute({ user_id, password })
+
+        await expect(promise).rejects.toBeInstanceOf(AppError)
+    })
+
+    it('Should not be able to change password if token is expired', async () => {
+        const user = await createUser.execute(userData)
+        const password = faker.internet.password()
+
+        const currentDate = new Date()
+        const created_at = new Date(
+            currentDate.setHours(currentDate.getHours() - 3)
+        )
+
+        jest.spyOn(
+            fakerUserTokenRepository,
+            'findUserTokenById'
+        ).mockImplementationOnce(async () => ({
+            id: faker.random.uuid(),
+            token: faker.random.uuid(),
+            user_id: user?.id || '1',
+            created_at,
+            updated_at: currentDate
+        }))
+
+        const promise = resetPasswordService.execute({
+            user_id: user?.id || '1',
+            password
+        })
 
         await expect(promise).rejects.toBeInstanceOf(AppError)
     })
