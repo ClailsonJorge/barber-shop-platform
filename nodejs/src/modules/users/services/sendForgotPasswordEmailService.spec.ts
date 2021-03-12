@@ -6,12 +6,7 @@ import FakerHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashPr
 import CreateUserService from './createUserService'
 import SendForgotPasswordEmail from './sendForgotPasswordEmailService'
 import FakerUserTokenRepository from '../repositories/fakes/fakerUserTokenRepository'
-
-interface IUserData {
-    name: string
-    email: string
-    password: string
-}
+import IUserData from './utils/models/IUserData'
 
 let fakerSendEmailProvider: FakerSendEmailProvider
 let fakerUsersRepository: FakerUsersRepository
