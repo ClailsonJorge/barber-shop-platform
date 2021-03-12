@@ -53,7 +53,7 @@ describe('Update user avatar', () => {
             avatarFileName
         })
 
-        expect(userUpdated).rejects.toBeInstanceOf(AppError)
+        await expect(userUpdated).rejects.toBeInstanceOf(AppError)
     })
 
     it('Should be able to update avatar when already exist avatar', async () => {
@@ -71,7 +71,7 @@ describe('Update user avatar', () => {
 
         const userData = {
             name: faker.name.firstName(),
-            email: `${name}.${faker.internet.email()}`,
+            email: faker.internet.email(),
             password: faker.internet.password()
         }
 
@@ -82,12 +82,12 @@ describe('Update user avatar', () => {
         const avatarFileNameFirst = faker.internet.avatar()
 
         await updateUserAvatarFileName.execute({
-            user_id: user.id,
+            user_id: user?.id || '1',
             avatarFileName: avatarFileNameFirst
         })
 
         const userUpdated = await updateUserAvatarFileName.execute({
-            user_id: user.id,
+            user_id: user?.id || '1',
             avatarFileName
         })
 

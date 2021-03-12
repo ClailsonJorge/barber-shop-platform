@@ -74,6 +74,6 @@ describe('Authenticate User', () => {
             password: faker.internet.password()
         })
 
-        expect(user).rejects.toBeInstanceOf(AppError)
+        await expect(user).rejects.toBeInstanceOf(AppError)
     })
 })

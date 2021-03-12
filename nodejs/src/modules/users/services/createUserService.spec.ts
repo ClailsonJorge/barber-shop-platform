@@ -35,8 +35,8 @@ describe('Create UserRepository', () => {
 
     it('Should be not able to create a duplicate user repository', async () => {
         const { createUserRepository, userData } = await makeSut()
-        expect(createUserRepository.execute(userData)).rejects.toBeInstanceOf(
-            AppError
-        )
+        await expect(
+            createUserRepository.execute(userData)
+        ).rejects.toBeInstanceOf(AppError)
     })
 })
