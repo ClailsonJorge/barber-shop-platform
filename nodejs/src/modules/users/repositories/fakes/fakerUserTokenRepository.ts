@@ -11,17 +11,18 @@ class FakerUserTokenRepository implements IUserTokenRepository {
         userToken.id = uuid()
         userToken.token = uuid()
         userToken.user_id = user_id
-
+        userToken.created_at = new Date(Date.now())
+        userToken.updated_at = new Date(Date.now())
         this.usersToken.push(userToken)
 
         return userToken
     }
 
-    public async findUserTokenById(id: string): Promise<string | undefined> {
+    public async findUserTokenById(id: string): Promise<UserToken | undefined> {
         const userToken = this.usersToken.find(
             (findUserToken) => findUserToken.user_id === id
         )
-        return userToken?.token
+        return userToken
     }
 }
 
