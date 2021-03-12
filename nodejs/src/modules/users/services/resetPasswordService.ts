@@ -9,6 +9,8 @@ interface IResetParams {
 }
 
 export default class ResetPasswordService {
+    timeExpireTokenMs = 2
+
     constructor(
         private usersRepository: IUsersRepository,
         private hashProvider: IHashPassword,
@@ -16,9 +18,11 @@ export default class ResetPasswordService {
     ) {}
 
     public async execute({ user_id, password }: IResetParams): Promise<void> {
-        const token = await this.userTokenRepository.findUserTokenById(user_id)
+        const userToken = await this.userTokenRepository.findUserTokenById(
+            user_id
+        )
 
-        if (!token) {
+        if (!userToken?.token) {
             throw new AppError('It does not valid token.')
         }
 
@@ -28,6 +32,13 @@ export default class ResetPasswordService {
 
         if (!user) {
             throw new AppError('User does not exist.')
+        }
+
+        if (
+            new Date(Date.now()).getHours() - userToken.created_at.getHours() >
+            this.timeExpireTokenMs
+        ) {
+            throw new AppError('Token is expired.')
         }
 
         user.password = passwordHash
