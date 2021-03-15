@@ -4,7 +4,7 @@ import IUsersRepository from '../repositories/IUsersRepository'
 import IUserTokenRepository from '../repositories/IUserTokenRepository'
 
 interface IResetParams {
-    user_id: string
+    token: string
     password: string
 }
 
@@ -17,10 +17,8 @@ export default class ResetPasswordService {
         private userTokenRepository: IUserTokenRepository
     ) {}
 
-    public async execute({ user_id, password }: IResetParams): Promise<void> {
-        const userToken = await this.userTokenRepository.findUserTokenById(
-            user_id
-        )
+    public async execute({ token, password }: IResetParams): Promise<void> {
+        const userToken = await this.userTokenRepository.findUserByToken(token)
 
         if (!userToken?.token) {
             throw new AppError('It does not valid token.')
@@ -28,7 +26,7 @@ export default class ResetPasswordService {
 
         const passwordHash = await this.hashProvider.hash(password)
 
-        const user = await this.usersRepository.findById(user_id)
+        const user = await this.usersRepository.findById(userToken.user_id)
 
         if (!user) {
             throw new AppError('User does not exist.')
