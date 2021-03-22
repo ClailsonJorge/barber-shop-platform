@@ -21,6 +21,7 @@ const makeSut = async () => {
     const userRepository = await createUserRepository.execute(userData)
 
     return {
+        fakerUserRepository,
         createUserRepository,
         userData,
         userRepository
@@ -38,5 +39,18 @@ describe('Create UserRepository', () => {
         await expect(
             createUserRepository.execute(userData)
         ).rejects.toBeInstanceOf(AppError)
+    })
+
+    it('Should be not able to return user', async () => {
+        const { createUserRepository, fakerUserRepository } = await makeSut()
+        jest.spyOn(fakerUserRepository, 'create').mockImplementationOnce(
+            async () => undefined
+        )
+        const user = createUserRepository.execute({
+            name: faker.name.firstName(),
+            email: faker.internet.email(),
+            password: faker.internet.password()
+        })
+        await expect(user).rejects.toBeInstanceOf(AppError)
     })
 })

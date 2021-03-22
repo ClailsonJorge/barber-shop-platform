@@ -52,6 +52,18 @@ describe('SendForgotPasswordEmail', () => {
         ).rejects.toBeInstanceOf(AppError)
     })
 
+    it('Should not be able to send email to recover password when do not create token', async () => {
+        const email = faker.internet.email()
+
+        jest.spyOn(fakerUserTokenRepository, 'generate').mockImplementationOnce(
+            async () => undefined
+        )
+
+        await expect(
+            sendForgotPasswordEmail.execute({ email })
+        ).rejects.toBeInstanceOf(AppError)
+    })
+
     it('Should generate a forgot password token', async () => {
         const generate = jest.spyOn(fakerUserTokenRepository, 'generate')
 

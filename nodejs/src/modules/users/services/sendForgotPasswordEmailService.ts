@@ -1,8 +1,9 @@
 import { inject, injectable } from 'tsyringe'
+import path from 'path'
 import IMailProvider from '@shared/container/providers/mailProvider/models/IMailProvider'
 import AppError from '@shared/errors/appError'
 import IUsersRepository from '../repositories/IUsersRepository'
-import IUserTokenRepository from '../repositories/IUserTokenRepository'
+import IUserTokensRepository from '../repositories/IUserTokensRepository'
 
 interface IExecuteProps {
     email: string
@@ -17,8 +18,8 @@ class SendForgotPasswordEmail {
         @inject('SendEmailProvider')
         private sendEmailProvider: IMailProvider,
 
-        @inject('UserTokenRepositiry')
-        private userTokenRepository: IUserTokenRepository
+        @inject('UserTokensRepository')
+        private userTokenRepository: IUserTokensRepository
     ) {}
 
     public async execute({ email }: IExecuteProps): Promise<void> {
@@ -28,12 +29,33 @@ class SendForgotPasswordEmail {
             throw new AppError('User does not exist.')
         }
 
-        await this.sendEmailProvider.sendEmail(
-            email,
-            'Texto que será enviado ao email'
+        const userToken = await this.userTokenRepository.generate(user.id)
+
+        if (!userToken) {
+            throw new AppError('Do not possible to send E-mail')
+        }
+
+        const forgotPasswordTemplate = path.resolve(
+            __dirname,
+            '..',
+            'views',
+            'forgotPassword.hbs'
         )
 
-        await this.userTokenRepository.generate(user.id)
+        await this.sendEmailProvider.sendEmail({
+            to: {
+                name: user.name,
+                email: user.email
+            },
+            subject: '[GoBarber] Recuperação de senha',
+            templateData: {
+                file: forgotPasswordTemplate,
+                variables: {
+                    name: user.name,
+                    link: `http://localhost:3000/reset_password?token=${userToken.token}`
+                }
+            }
+        })
     }
 }
 

@@ -15,7 +15,6 @@ export default class ForgotSessionController {
         await sendEmail.execute({
             email
         })
-
         return response.status(204).send()
     }
 }

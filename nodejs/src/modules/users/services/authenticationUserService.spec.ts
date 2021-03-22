@@ -4,26 +4,34 @@ import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCript
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import AuthenticateUserService from './authenticationUserService'
 import CreateUserService from './createUserService'
+import IUserData from './utils/models/IUserData'
+
+let fakerUserRepository: FakerUsersRepository
+let hashPassword: FakerBCriptHashProvider
+let authenticateUser: AuthenticateUserService
+let createUserRepository: CreateUserService
+let userData: IUserData
 
 describe('Authenticate User', () => {
-    it('Should be able authenticate User', async () => {
-        const fakerUserRepository = new FakerUsersRepository()
-        const hashPassword = new FakerBCriptHashProvider()
-        const authenticateUser = new AuthenticateUserService(
+    beforeEach(() => {
+        fakerUserRepository = new FakerUsersRepository()
+        hashPassword = new FakerBCriptHashProvider()
+        authenticateUser = new AuthenticateUserService(
             fakerUserRepository,
             hashPassword
         )
-        const createUserRepository = new CreateUserService(
+        createUserRepository = new CreateUserService(
             fakerUserRepository,
             hashPassword
         )
 
-        const userData = {
+        userData = {
             name: faker.name.firstName(),
             email: faker.internet.email(),
             password: faker.internet.password()
         }
-
+    })
+    it('Should be able authenticate User', async () => {
         await createUserRepository.execute(userData)
 
         const user = await authenticateUser.execute({
@@ -35,40 +43,16 @@ describe('Authenticate User', () => {
     })
 
     it('Should be not able authenticate User when the password is wrong', async () => {
-        const fakerUserRepository = new FakerUsersRepository()
-        const hashPassword = new FakerBCriptHashProvider()
-        const authenticateUser = new AuthenticateUserService(
-            fakerUserRepository,
-            hashPassword
-        )
-        const createUserRepository = new CreateUserService(
-            fakerUserRepository,
-            hashPassword
-        )
-
-        const userData = {
-            name: faker.name.firstName(),
-            email: faker.internet.email(),
-            password: faker.internet.password()
-        }
-
         await createUserRepository.execute(userData)
 
         const user = authenticateUser.execute({
             email: userData.email,
             password: faker.internet.password()
         })
-        expect(user).rejects.toBeInstanceOf(AppError)
+        await expect(user).rejects.toBeInstanceOf(AppError)
     })
 
     it('Should be not able authenticate User when not exist User', async () => {
-        const fakerUserRepository = new FakerUsersRepository()
-        const hashPassword = new FakerBCriptHashProvider()
-        const authenticateUser = new AuthenticateUserService(
-            fakerUserRepository,
-            hashPassword
-        )
-
         const user = authenticateUser.execute({
             email: faker.internet.email(),
             password: faker.internet.password()

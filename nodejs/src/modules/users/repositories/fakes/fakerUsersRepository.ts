@@ -10,7 +10,7 @@ class FakerUsersRepository implements IUsersRepository {
         name,
         email,
         password
-    }: ICreateUserDto): Promise<User> {
+    }: ICreateUserDto): Promise<User | undefined> {
         const userRepository = new User()
 
         userRepository.id = uuid()
@@ -25,7 +25,7 @@ class FakerUsersRepository implements IUsersRepository {
         return userRepository
     }
 
-    public async save(user: User): Promise<User> {
+    public async save(user: User): Promise<User | undefined> {
         const userIndex = this.usersRepository.findIndex(
             (userRepository) => userRepository.id === user.id
         )
