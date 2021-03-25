@@ -10,6 +10,7 @@ const fillAppointmentsOneDay = async (
 ): Promise<void> => {
     await repository.create({
         provider_id: 'user_id',
+        user_id: 'user_id',
         date: new Date(2021, 4, 20, 8 + count, 0, 0)
     })
 
@@ -30,6 +31,7 @@ describe('ListProviderMonthAvailability', () => {
 
         await fakerAppointmentsRepository.create({
             provider_id: 'user_id',
+            user_id: 'user_id',
             date: new Date(2021, 4, 21, 8, 0, 0)
         })
 

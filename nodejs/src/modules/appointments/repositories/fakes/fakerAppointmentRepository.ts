@@ -21,6 +21,7 @@ class FakerAppointmentsRepository implements IAppointmentsRepository {
 
     public async create({
         date,
+        user_id,
         provider_id
     }: ICreateAppointmentDto): Promise<Appointment | undefined> {
         const appointment = new Appointment()

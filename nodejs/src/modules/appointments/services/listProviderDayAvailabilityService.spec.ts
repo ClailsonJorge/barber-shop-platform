@@ -8,17 +8,10 @@ const makeAppointment = async (
     repository: FakerAppointmentsRepository,
     addHour = 0
 ): Promise<void> => {
-    const currentDate = new Date(Date.now())
     await repository.create({
         provider_id: 'user_id',
-        date: new Date(
-            currentDate.getFullYear(),
-            currentDate.getMonth(),
-            currentDate.getDate(),
-            currentDate.getHours() + addHour,
-            0,
-            0
-        )
+        user_id: 'user_id',
+        date: new Date(2021, 4, 25, 8 + addHour, 0, 0)
     })
 }
 
@@ -31,33 +24,36 @@ describe('ListProviderDayAvailability', () => {
     })
 
     it('Should be able to list the day availability from Provider', async () => {
-        const currentDate = new Date(Date.now())
         await makeAppointment(fakerAppointmentsRepository, 1)
         await makeAppointment(fakerAppointmentsRepository, 2)
 
+        jest.spyOn(Date, 'now').mockImplementationOnce(() =>
+            new Date(2021, 4, 25, 10).getTime()
+        )
+
         const availability = await listProviderDayAvailabilityService.execute({
             provider_id: 'user_id',
-            year: currentDate.getFullYear(),
-            month: currentDate.getMonth() + 1,
-            day: currentDate.getDate()
+            year: 2021,
+            month: 5,
+            day: 25
         })
 
         expect(availability).toEqual(
             expect.arrayContaining([
                 {
-                    hour: currentDate.getHours(),
+                    hour: 8,
                     available: false
                 },
                 {
-                    hour: currentDate.getHours() + 1,
+                    hour: 9,
                     available: false
                 },
                 {
-                    hour: currentDate.getHours() + 2,
+                    hour: 10,
                     available: false
                 },
                 {
-                    hour: currentDate.getHours() + 3,
+                    hour: 11,
                     available: true
                 }
             ])

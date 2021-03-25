@@ -22,7 +22,7 @@ describe('ListProviders', () => {
         createUser = new CreateUserService(fakerUsersRepository, hash)
         listProviders = new ListProvidersService(fakerUsersRepository)
     })
-    test('Should be able to list the Providers', async () => {
+    it('Should be able to list the Providers', async () => {
         const user1 = await createUser.execute(makeUsers())
         const user2 = await createUser.execute(makeUsers())
         const user3 = await createUser.execute(makeUsers())

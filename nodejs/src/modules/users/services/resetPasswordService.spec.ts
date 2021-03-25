@@ -1,20 +1,16 @@
-import FakerSendEmailProvider from '@shared/container/providers/mailProvider/fakes/fakerSendEmailProvider'
 import faker from 'faker'
 import AppError from '@shared/errors/appError'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import FakerUserTokenRepository from '../repositories/fakes/fakerUserTokenRepository'
 import CreateUserService from './createUserService'
-import SendForgotPasswordEmail from './sendForgotPasswordEmailService'
 import IUserData from './utils/models/IUserData'
 import ResetPasswordService from './resetPasswordService'
 
 let fakerUsersRepository: FakerUsersRepository
 let fakerUserTokenRepository: FakerUserTokenRepository
 let createUser: CreateUserService
-let sendForgotPasswordEmail: SendForgotPasswordEmail
 let hash: FakerBCriptHashProvider
-let fakerSendEmailProvider: FakerSendEmailProvider
 let resetPasswordService: ResetPasswordService
 let userData: IUserData
 
@@ -23,16 +19,10 @@ describe('ResetPasswordService', () => {
         fakerUsersRepository = new FakerUsersRepository()
         fakerUserTokenRepository = new FakerUserTokenRepository()
         hash = new FakerBCriptHashProvider()
-        fakerSendEmailProvider = new FakerSendEmailProvider()
         createUser = new CreateUserService(fakerUsersRepository, hash)
         resetPasswordService = new ResetPasswordService(
             fakerUsersRepository,
             hash,
-            fakerUserTokenRepository
-        )
-        sendForgotPasswordEmail = new SendForgotPasswordEmail(
-            fakerUsersRepository,
-            fakerSendEmailProvider,
             fakerUserTokenRepository
         )
         userData = {

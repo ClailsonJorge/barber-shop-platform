@@ -6,6 +6,7 @@ import CreateAppointment from './createAppointmentService'
 const makeSut = async () => {
     const appointmentData = {
         date: faker.date.recent(),
+        user_id: faker.random.uuid(),
         provider_id: faker.random.uuid()
     }
     const fakerRepository = new FakerAppointmentsRepository()

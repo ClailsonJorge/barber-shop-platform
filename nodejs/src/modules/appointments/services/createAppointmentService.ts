@@ -7,6 +7,7 @@ import IAppointmentsRepository from '../repositories/IAppointmentsRepository'
 interface IExecuteParams {
     date: Date
     provider_id: string
+    user_id: string
 }
 
 @injectable()
@@ -18,6 +19,7 @@ export default class CreateAppointment {
 
     async execute({
         date,
+        user_id,
         provider_id
     }: IExecuteParams): Promise<Appointment | undefined> {
         const parseDate = startOfHour(date)
@@ -31,6 +33,7 @@ export default class CreateAppointment {
 
         const appointment = await this.appointmentsRepository.create({
             provider_id,
+            user_id,
             date: parseDate
         })
 

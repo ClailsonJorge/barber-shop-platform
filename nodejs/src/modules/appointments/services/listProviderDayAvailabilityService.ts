@@ -61,7 +61,6 @@ export default class ListProviderDayAvailabilityService {
                     !appointmentsHour && isAfter(compareDate, currentDate)
             }
         })
-
         return availability
     }
 }
