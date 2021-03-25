@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { injectable, inject } from 'tsyringe'
-import { getHours, getTime } from 'date-fns'
+import { getHours, isAfter } from 'date-fns'
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository'
 
 interface IExecuteParams {
@@ -39,7 +39,6 @@ export default class ListProviderDayAvailabilityService {
                 year
             }
         )
-
         const eachDayArray = Array.from(
             {
                 length: quantityHourOfAppointmentForDay
@@ -47,14 +46,19 @@ export default class ListProviderDayAvailabilityService {
             (_, index) => index + startHourInWorkDay
         )
 
+        const currentDate = new Date(Date.now())
+
         const availability = eachDayArray.map((hour) => {
             const appointmentsHour = appointments.find((appointment) => {
                 return getHours(appointment.date) === hour
             })
 
+            const compareDate = new Date(year, month - 1, day, hour)
+
             return {
                 hour,
-                available: !appointmentsHour
+                available:
+                    !appointmentsHour && isAfter(compareDate, currentDate)
             }
         })
 
