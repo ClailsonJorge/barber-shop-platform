@@ -23,7 +23,7 @@ class AppointmentsRepository implements IAppointmentsRepository {
         date,
         user_id,
         provider_id
-    }: ICreateAppointmentDto): Promise<Appointment | undefined> {
+    }: ICreateAppointmentDto): Promise<Appointment> {
         const appointment = this.ormRepository.create({
             provider_id,
             user_id,
