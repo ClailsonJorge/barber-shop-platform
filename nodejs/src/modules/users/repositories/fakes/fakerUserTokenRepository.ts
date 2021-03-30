@@ -5,7 +5,7 @@ import IUserTokensRepository from '../IUserTokensRepository'
 class FakerUserTokenRepository implements IUserTokensRepository {
     private usersToken: UserToken[] = []
 
-    public async generate(user_id: string): Promise<UserToken> {
+    public async generate(user_id: string): Promise<UserToken | undefined> {
         const userToken = new UserToken()
 
         userToken.id = uuid()
