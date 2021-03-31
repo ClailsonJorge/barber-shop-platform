@@ -8,12 +8,8 @@ import IUsersRepository from '../repositories/IUsersRepository'
 import ICreateUserDto from '../dtos/ICreateUserDto'
 import IHashPassword from '../providers/hashProvider/models/IHashPassword'
 
-interface IUserReturn extends Omit<User, 'password'> {
-    password?: string
-}
-
 interface IAuthenticateReturn {
-    user: IUserReturn
+    user: User
     token: string
 }
 
@@ -41,17 +37,14 @@ class AuthenticateUserService {
             throw new AppError('Incorrect email/password combination!', 401)
         }
 
-        const userReturn: IUserReturn = user
-
         const { secret, expiresIn } = authConfig.jwt
-        const token = sign({}, secret, {
+        const token = sign({}, secret || '', {
             subject: user.id,
             expiresIn
         })
-        delete userReturn.password
 
         return {
-            user: userReturn,
+            user,
             token
         }
     }

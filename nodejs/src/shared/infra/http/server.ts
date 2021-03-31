@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import 'dotenv/config'
 import '../typeorm'
 import '@shared/container'
 import cors from 'cors'

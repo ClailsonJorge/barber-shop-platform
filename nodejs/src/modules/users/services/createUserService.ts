@@ -5,10 +5,6 @@ import ICreateUserDto from '../dtos/ICreateUserDto'
 import IUsersRepository from '../repositories/IUsersRepository'
 import IHashPassword from '../providers/hashProvider/models/IHashPassword'
 
-interface IExecuteReturn extends Omit<User, 'password'> {
-    password?: string
-}
-
 @injectable()
 class CreateUserService {
     constructor(
@@ -23,7 +19,7 @@ class CreateUserService {
         name,
         email,
         password
-    }: ICreateUserDto): Promise<IExecuteReturn> {
+    }: ICreateUserDto): Promise<User> {
         const checkEmailExist = await this.userRepository.findByEmail(email)
 
         if (checkEmailExist) {

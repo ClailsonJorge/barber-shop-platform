@@ -1,13 +1,14 @@
-import uploadonfig from '@config/upload'
-import fs from 'fs'
 import path from 'path'
+import fs from 'fs'
+
+import uploadonfig from '@config/upload'
 import IStorageInterface from '../models/IStorageProvider'
 
 class DiskStorage implements IStorageInterface {
     public async saveFile(file: string): Promise<string> {
         await fs.promises.rename(
-            uploadonfig.tmpFolder,
-            uploadonfig.uploadsFolder
+            path.resolve(uploadonfig.tmpFolder, file),
+            path.resolve(uploadonfig.uploadsFolder, file)
         )
 
         return file

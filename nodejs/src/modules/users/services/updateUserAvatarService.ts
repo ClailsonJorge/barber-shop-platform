@@ -9,10 +9,6 @@ interface IExecuteParams {
     avatarFileName: string
 }
 
-interface IUserResponse extends Omit<User, 'password'> {
-    password?: string
-}
-
 @injectable()
 export default class UpdateUserAvatarService {
     constructor(
@@ -26,7 +22,7 @@ export default class UpdateUserAvatarService {
     public async execute({
         user_id,
         avatarFileName
-    }: IExecuteParams): Promise<IUserResponse> {
+    }: IExecuteParams): Promise<User> {
         const user = await this.userRepository.findById(user_id)
 
         if (!user) {
@@ -40,9 +36,9 @@ export default class UpdateUserAvatarService {
         const filePath = await this.diskStorage.saveFile(avatarFileName)
 
         user.avatar = filePath
+
         await this.userRepository.save(user)
-        const userResponse: IUserResponse = user
-        delete userResponse.password
-        return userResponse
+
+        return user
     }
 }
