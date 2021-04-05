@@ -1,6 +1,7 @@
 import faker from 'faker'
 import FakerSendEmailProvider from '@shared/container/providers/mailProvider/fakes/fakerSendEmailProvider'
 import AppError from '@shared/errors/appError'
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fake/fakerCacheProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import FakerHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import CreateUserService from './createUserService'
@@ -9,6 +10,7 @@ import FakerUserTokenRepository from '../repositories/fakes/fakerUserTokenReposi
 import IUserData from './utils/models/IUserData'
 
 let fakerSendEmailProvider: FakerSendEmailProvider
+let fakeCacheProvider: FakeCacheProvider
 let fakerUsersRepository: FakerUsersRepository
 let hash: FakerHashProvider
 let fakerUserTokenRepository: FakerUserTokenRepository
@@ -18,11 +20,16 @@ let userData: IUserData
 
 describe('SendForgotPasswordEmail', () => {
     beforeEach(() => {
+        fakeCacheProvider = new FakeCacheProvider()
         fakerSendEmailProvider = new FakerSendEmailProvider()
         fakerUsersRepository = new FakerUsersRepository()
         hash = new FakerHashProvider()
         fakerUserTokenRepository = new FakerUserTokenRepository()
-        createUserRepository = new CreateUserService(fakerUsersRepository, hash)
+        createUserRepository = new CreateUserService(
+            fakerUsersRepository,
+            hash,
+            fakeCacheProvider
+        )
         sendForgotPasswordEmail = new SendForgotPasswordEmail(
             fakerUsersRepository,
             fakerSendEmailProvider,

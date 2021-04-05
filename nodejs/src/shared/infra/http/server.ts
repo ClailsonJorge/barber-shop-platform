@@ -8,10 +8,12 @@ import { errors } from 'celebrate'
 import 'express-async-errors'
 import uploadConfig from '@config/upload'
 import AppError from '@shared/errors/appError'
+import rateLimiter from '@shared/infra/http/middlewares/rateLimiter'
 import routes from './routes'
 
 const app = express()
 
+app.use(rateLimiter)
 app.use(cors())
 app.use(express.json())
 app.use(routes)

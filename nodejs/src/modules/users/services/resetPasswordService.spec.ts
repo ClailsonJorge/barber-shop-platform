@@ -1,5 +1,6 @@
 import faker from 'faker'
 import AppError from '@shared/errors/appError'
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fake/fakerCacheProvider'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import FakerUserTokenRepository from '../repositories/fakes/fakerUserTokenRepository'
@@ -8,6 +9,7 @@ import IUserData from './utils/models/IUserData'
 import ResetPasswordService from './resetPasswordService'
 
 let fakerUsersRepository: FakerUsersRepository
+let fakeCacheProvider: FakeCacheProvider
 let fakerUserTokenRepository: FakerUserTokenRepository
 let createUser: CreateUserService
 let hash: FakerBCriptHashProvider
@@ -19,7 +21,11 @@ describe('ResetPasswordService', () => {
         fakerUsersRepository = new FakerUsersRepository()
         fakerUserTokenRepository = new FakerUserTokenRepository()
         hash = new FakerBCriptHashProvider()
-        createUser = new CreateUserService(fakerUsersRepository, hash)
+        createUser = new CreateUserService(
+            fakerUsersRepository,
+            hash,
+            fakeCacheProvider
+        )
         resetPasswordService = new ResetPasswordService(
             fakerUsersRepository,
             hash,
@@ -35,9 +41,9 @@ describe('ResetPasswordService', () => {
     it('Should be able to change password', async () => {
         const user = await createUser.execute(userData)
 
-        const { token } = await fakerUserTokenRepository.generate(
-            user?.id || '1'
-        )
+        const userToken = await fakerUserTokenRepository.generate(user.id)
+
+        const token = userToken ? userToken.token : faker.random.uuid()
 
         const password = faker.internet.password()
 

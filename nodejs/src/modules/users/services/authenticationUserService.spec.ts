@@ -1,11 +1,13 @@
 import AppError from '@shared/errors/appError'
 import faker from 'faker'
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fake/fakerCacheProvider'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import AuthenticateUserService from './authenticationUserService'
 import CreateUserService from './createUserService'
 import IUserData from './utils/models/IUserData'
 
+let fakeCacheProvider: FakeCacheProvider
 let fakerUserRepository: FakerUsersRepository
 let hashPassword: FakerBCriptHashProvider
 let authenticateUser: AuthenticateUserService
@@ -14,6 +16,7 @@ let userData: IUserData
 
 describe('Authenticate User', () => {
     beforeEach(() => {
+        fakeCacheProvider = new FakeCacheProvider()
         fakerUserRepository = new FakerUsersRepository()
         hashPassword = new FakerBCriptHashProvider()
         authenticateUser = new AuthenticateUserService(
@@ -22,7 +25,8 @@ describe('Authenticate User', () => {
         )
         createUserRepository = new CreateUserService(
             fakerUserRepository,
-            hashPassword
+            hashPassword,
+            fakeCacheProvider
         )
 
         userData = {

@@ -1,15 +1,18 @@
 import faker from 'faker'
 import AppError from '@shared/errors/appError'
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fake/fakerCacheProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import CreateUserService from './createUserService'
 
 const makeSut = async () => {
+    const fakeCacheProvider = new FakeCacheProvider()
     const fakerUserRepository = new FakerUsersRepository()
     const hashPassword = new FakerBCriptHashProvider()
     const createUserRepository = new CreateUserService(
         fakerUserRepository,
-        hashPassword
+        hashPassword,
+        fakeCacheProvider
     )
 
     const userData = {

@@ -1,6 +1,7 @@
 import AppError from '@shared/errors/appError'
 import faker from 'faker'
 import FakerDiskStorageProvider from '@shared/container/providers/diskStorage/fakes/fakerDiskStorageProvider'
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fake/fakerCacheProvider'
 import FakerBCriptHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import CreateUserService from './createUserService'
@@ -9,11 +10,13 @@ import UpdateUserAvatarService from './updateUserAvatarService'
 describe('Update user avatar', () => {
     it('Should be able to update avatar', async () => {
         const fakerUsersRepository = new FakerUsersRepository()
+        const fakeCacheProvider = new FakeCacheProvider()
         const fakerBCriptHashProvider = new FakerBCriptHashProvider()
         const diskStorage = new FakerDiskStorageProvider()
         const createUserService = new CreateUserService(
             fakerUsersRepository,
-            fakerBCriptHashProvider
+            fakerBCriptHashProvider,
+            fakeCacheProvider
         )
         const updateUserAvatarFileName = new UpdateUserAvatarService(
             fakerUsersRepository,
@@ -60,9 +63,11 @@ describe('Update user avatar', () => {
         const fakerUsersRepository = new FakerUsersRepository()
         const fakerBCriptHashProvider = new FakerBCriptHashProvider()
         const diskStorage = new FakerDiskStorageProvider()
+        const fakeCacheProvider = new FakeCacheProvider()
         const createUserService = new CreateUserService(
             fakerUsersRepository,
-            fakerBCriptHashProvider
+            fakerBCriptHashProvider,
+            fakeCacheProvider
         )
         const updateUserAvatarFileName = new UpdateUserAvatarService(
             fakerUsersRepository,

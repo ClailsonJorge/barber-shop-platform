@@ -1,5 +1,6 @@
 import faker from 'faker'
 import AppError from '@shared/errors/appError'
+import FakeCacheProvider from '@shared/container/providers/cacheProvider/fake/fakerCacheProvider'
 import FakerUsersRepository from '../repositories/fakes/fakerUsersRepository'
 import FakerHashProvider from '../providers/hashProvider/fakes/fakerBCriptHashProvider'
 import CreateUserService from './createUserService'
@@ -7,6 +8,7 @@ import UpdateProfileService from './updateProfileService'
 import IUserData from './utils/models/IUserData'
 
 let fakerUsersRepository: FakerUsersRepository
+let fakeCacheProvider: FakeCacheProvider
 let hash: FakerHashProvider
 let createUserRepository: CreateUserService
 let updateProfileService: UpdateProfileService
@@ -15,8 +17,13 @@ let userData: IUserData
 describe('UpdateProfile', () => {
     beforeEach(() => {
         fakerUsersRepository = new FakerUsersRepository()
+        fakeCacheProvider = new FakeCacheProvider()
         hash = new FakerHashProvider()
-        createUserRepository = new CreateUserService(fakerUsersRepository, hash)
+        createUserRepository = new CreateUserService(
+            fakerUsersRepository,
+            hash,
+            fakeCacheProvider
+        )
         updateProfileService = new UpdateProfileService(
             fakerUsersRepository,
             hash
