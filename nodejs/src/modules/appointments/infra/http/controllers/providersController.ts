@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { container } from 'tsyringe'
+import { classToClass } from 'class-transformer'
 import ListProvidersServices from '@modules/appointments/services/listProvidersServices'
 import AppError from '@shared/errors/appError'
 
@@ -21,9 +22,7 @@ export default class ProvidersController {
         })
 
         const providerWithoutPassword = providers.map((provider) => {
-            const newProvider = { ...provider }
-            delete newProvider.password
-            return newProvider
+            return classToClass(provider)
         })
 
         return response.json(providerWithoutPassword)

@@ -49,7 +49,8 @@ export default class CreateAppointment {
         }
 
         const findAppointmentsEquals = await this.appointmentsRepository.findByDate(
-            parseDate
+            parseDate,
+            provider_id
         )
 
         if (findAppointmentsEquals) {

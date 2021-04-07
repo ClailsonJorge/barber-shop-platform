@@ -1,4 +1,5 @@
 import ICacheProvider from '@shared/container/providers/cacheProvider/models/ICacheProvider'
+import { classToClass } from 'class-transformer'
 import { inject, injectable } from 'tsyringe'
 import Appointment from '../infra/typeorm/entities/appointment'
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository'
@@ -27,6 +28,7 @@ export default class ListProviderAppointmentsService {
         year
     }: IExecuteParams): Promise<Appointment[]> {
         const cacheKey = `provider-appointments:${provider_id}:${year}-${month}-${day}`
+
         let appointments = await this.cacheProvider.recover<Appointment[]>(
             cacheKey
         )
@@ -40,8 +42,8 @@ export default class ListProviderAppointmentsService {
                     year
                 }
             )
-            console.log('pegou do banco')
-            await this.cacheProvider.save(cacheKey, appointments)
+
+            await this.cacheProvider.save(cacheKey, classToClass(appointments))
         }
 
         return appointments

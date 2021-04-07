@@ -11,9 +11,14 @@ class FakerAppointmentsRepository implements IAppointmentsRepository {
 
     cont = 0
 
-    public async findByDate(date: Date): Promise<Appointment | undefined> {
+    public async findByDate(
+        date: Date,
+        provider_id: string
+    ): Promise<Appointment | undefined> {
         const findAppointmentsEquals = this.appointmentRepository.find(
-            (appointment) => String(appointment.date) === String(date)
+            (appointment) =>
+                String(appointment.date) === String(date) &&
+                appointment.provider_id === provider_id
         )
 
         return findAppointmentsEquals
