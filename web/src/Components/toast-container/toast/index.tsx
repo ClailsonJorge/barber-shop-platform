@@ -29,7 +29,7 @@ const Toast: React.FC<ToastParams> = ({ message, style }) => {
         <Container
             style={style}
             type={message.type}
-            hasDescription={!!message.description}
+            hasDescription={Number(!!message.description)}
         >
             {icons[message.type || 'info']}
 
