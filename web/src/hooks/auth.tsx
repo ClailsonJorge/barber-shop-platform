@@ -31,6 +31,8 @@ export const AuthProvider: React.FC = ({ children }) => {
         const user = localStorage.getItem('@GoBarber/user')
 
         if (token && user) {
+            api.defaults.headers.Authorization = `Bearer ${token}`
+
             return {
                 token,
                 user: JSON.parse(user)
@@ -39,6 +41,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
         return {} as AuthData
     })
+
     const signIn = useCallback(async ({ email, password }) => {
         const response = await api.post('sessions', {
             email,
@@ -49,6 +52,9 @@ export const AuthProvider: React.FC = ({ children }) => {
 
         localStorage.setItem('@GoBarber/token', token)
         localStorage.setItem('@GoBarber/user', JSON.stringify(user))
+
+        api.defaults.headers.Authorization = `Bearer ${token}`
+
         setData({ token, user })
     }, [])
 

@@ -20,6 +20,7 @@ export default class AppointmentsController {
             user_id,
             provider_id
         })
+
         return response.json(appointment)
     }
 }
