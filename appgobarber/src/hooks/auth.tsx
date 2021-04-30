@@ -1,10 +1,19 @@
 import React, { createContext, useCallback, useContext, useState, useEffect } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import api from '../services/api'
+import useEffectAsync from '../utils/useEffectAsync'
+
+
+interface User {
+    id: string
+    name: string
+    email: string
+    avatar_url: string
+}
 
 interface AuthData {
     token: string
-    user: object
+    user: User
 }
 
 interface SignInProps {
@@ -13,7 +22,7 @@ interface SignInProps {
 }
 
 interface AuthParams {
-    user: object
+    user: User
     signIn(credentials: SignInProps): Promise<void>
     signOut(): void
     loading: boolean
@@ -25,18 +34,22 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [data, setData] = useState<AuthData>({} as AuthData)
     const [loading, setLoading] = useState(false)
 
-    useEffect(()=>{
-        async function loadStorage() {
-            const token = await AsyncStorage.getItem('@GoBarber/token')
-            const user = await AsyncStorage.getItem('@GoBarber/user')
+    async function loadStorage() {
+        const [token, user] = await AsyncStorage.multiGet([
+            '@GoBarber/token', '@GoBarber/user'
+        ])
 
-            if (token && user) {
-                setData({token, user: JSON.parse(user)})
-                setLoading(true)
-            }
+        if (token[1] && user[1]) {
+            api.defaults.headers.authorization = `Bearer ${token[1]}`
+
+            setData({ token: token[1], user: JSON.parse(user[1])})
+            setLoading(true)
         }
-        loadStorage()
-    }, [])
+
+        setLoading(false)
+    }
+
+    useEffectAsync(loadStorage, [])
 
     const signIn = useCallback(async ({ email, password }) => {
         const response = await api.post('/sessions', {
@@ -48,6 +61,9 @@ export const AuthProvider: React.FC = ({ children }) => {
 
         AsyncStorage.setItem('@GoBarber/token', token)
         AsyncStorage.setItem('@GoBarber/user', JSON.stringify(user))
+
+        api.defaults.headers.authorization = `Bearer ${token}`
+
         setData({ token, user })
     }, [])
 
