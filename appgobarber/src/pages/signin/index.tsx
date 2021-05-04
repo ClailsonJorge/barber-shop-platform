@@ -24,7 +24,7 @@ const SignIn: React.FC = () => {
     const formRef = useRef<FormHandles>(null)
     const navigation = useNavigation()
     const passwordInputRef = useRef<TextInput>(null)
-    const { signIn, user } = useAuth()
+    const { signIn } = useAuth()
 
     const handleKeyBoardShow = useCallback(() => {
         setKeyboard(true);
@@ -36,7 +36,6 @@ const SignIn: React.FC = () => {
 
     const handleSubmit = useCallback(
             async (data: HandleSubmitParams) => {
-                console.log(user)
                 try {
                     formRef.current?.setErrors({})
                     const schema = Yup.object().shape({
