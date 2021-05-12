@@ -8,10 +8,16 @@ import AppRoute from './app.routes'
 const Route: React.FC = () => {
     const { user, loading } = useAuth()
 
-    if(loading) {
+    if (loading) {
         return (
-            <View style={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                <ActivityIndicator size="large" color="#999"/>
+            <View
+                style={{
+                    height: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <ActivityIndicator size="large" color="#999" />
             </View>
         )
     }

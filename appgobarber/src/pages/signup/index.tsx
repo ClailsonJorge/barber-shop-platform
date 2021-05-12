@@ -3,7 +3,8 @@ import {
     Image,
     ScrollView,
     KeyboardAvoidingView,
-    Platform, Keyboard,
+    Platform,
+    Keyboard,
     TextInput,
     Alert
 } from 'react-native'
@@ -21,13 +22,12 @@ import api from '../../services/api'
 
 import { Container, Title, CreateAccount, CreateAccountText } from './styles'
 
-
 interface SignUpData {
     name: string
     email: string
     password: string
 }
-const SignIn: React.FC = () => {
+const SignUp: React.FC = () => {
     const [keyboard, setKeyboard] = useState(false)
     const formRef = useRef<FormHandles>(null)
     const emailInputRef = useRef<TextInput>(null)
@@ -35,12 +35,12 @@ const SignIn: React.FC = () => {
     const navigation = useNavigation()
 
     const handleKeyBoardShow = useCallback(() => {
-        setKeyboard(true);
-    }, [keyboard])
+        setKeyboard(true)
+    }, [])
 
     const handleKeyBoardHide = useCallback(() => {
-        setKeyboard(false);
-    }, [keyboard])
+        setKeyboard(false)
+    }, [])
 
     const handleSubmit = useCallback(
         async (data: SignUpData) => {
@@ -62,20 +62,26 @@ const SignIn: React.FC = () => {
                 })
 
                 await api.post('/users', data)
-                Alert.alert('Cadastro realizado com sucesso', 'Você já pode realizar o login')
+                Alert.alert(
+                    'Cadastro realizado com sucesso',
+                    'Você já pode realizar o login'
+                )
                 navigation.goBack()
             } catch (err) {
                 if (err instanceof Yup.ValidationError) {
                     formRef.current?.setErrors(getValidationErrors(err))
                     return
                 }
-                Alert.alert('Ocorreu um Error', 'Erro ao tentar cadastrar Usuário, tente Novamente')
+                Alert.alert(
+                    'Ocorreu um Error',
+                    'Erro ao tentar cadastrar Usuário, tente Novamente'
+                )
             }
         },
-        []
+        [navigation]
     )
 
-    useEffect(()=>{
+    useEffect(() => {
         Keyboard.addListener('keyboardDidShow', handleKeyBoardShow)
         Keyboard.addListener('keyboardDidHide', handleKeyBoardHide)
 
@@ -83,68 +89,82 @@ const SignIn: React.FC = () => {
             Keyboard.removeListener('keyboardWillShow', handleKeyBoardShow)
             Keyboard.removeListener('keyboardDidHide', handleKeyBoardHide)
         }
-    },[])
+    }, [handleKeyBoardShow, handleKeyBoardHide])
 
     return (
         <>
-            <KeyboardAvoidingView style={{flex: 1,}} behavior={Platform.OS === 'ios' ? 'padding' : undefined} enabled>
-                <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{flex: 1,}}>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                enabled
+            >
+                <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{ flex: 1 }}
+                >
                     <Container>
                         <Image source={logo} />
                         <Title>Crie sua conta</Title>
                         <Form ref={formRef} onSubmit={handleSubmit}>
                             <Input
-                             name="name"
-                             icon="user"
-                             placeholder="Nome"
-                             autoCapitalize="words"
-                             autoCorrect={false}
-                             autoFocus
-                             returnKeyType="next"
-                             onSubmitEditing={() => {
-                                emailInputRef.current?.focus()
-                             }}
+                                name="name"
+                                icon="user"
+                                placeholder="Nome"
+                                autoCapitalize="words"
+                                autoCorrect={false}
+                                autoFocus
+                                returnKeyType="next"
+                                onSubmitEditing={() => {
+                                    emailInputRef.current?.focus()
+                                }}
                             />
                             <Input
-                             ref={emailInputRef}
-                             name="email"
-                             icon="mail"
-                             placeholder="E-mail"
-                             autoCapitalize="none"
-                             keyboardType="email-address"
-                             returnKeyType="next"
-                             onSubmitEditing={() => {
-                                passwordInputRef.current?.focus()
-                            }}
+                                ref={emailInputRef}
+                                name="email"
+                                icon="mail"
+                                placeholder="E-mail"
+                                autoCapitalize="none"
+                                keyboardType="email-address"
+                                returnKeyType="next"
+                                onSubmitEditing={() => {
+                                    passwordInputRef.current?.focus()
+                                }}
                             />
                             <Input
-                             ref={passwordInputRef}
-                             name="password"
-                             icon="lock"
-                             placeholder="Senha"
-                             secureTextEntry
-                             returnKeyType="send"
-                             textContentType="newPassword"
-                             onSubmitEditing={() => {
-                                formRef.current?.submitForm()
-                            }}
+                                ref={passwordInputRef}
+                                name="password"
+                                icon="lock"
+                                placeholder="Senha"
+                                secureTextEntry
+                                returnKeyType="send"
+                                textContentType="newPassword"
+                                onSubmitEditing={() => {
+                                    formRef.current?.submitForm()
+                                }}
                             />
                             <Button
-                             onPress={() => {formRef.current?.submitForm()}}>
-                                 Cadastrar
+                                onPress={() => {
+                                    formRef.current?.submitForm()
+                                }}
+                            >
+                                Cadastrar
                             </Button>
                         </Form>
                     </Container>
                 </ScrollView>
             </KeyboardAvoidingView>
 
-            {!keyboard && <CreateAccount keyboard={keyboard} onPress={() => navigation.goBack()}>
-                <Icon name="arrow-left" size={20} color="#fff"/>
-                <CreateAccountText>Voltar para o login</CreateAccountText>
-            </CreateAccount>}
+            {!keyboard && (
+                <CreateAccount
+                    keyboard={keyboard}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Icon name="arrow-left" size={20} color="#fff" />
+                    <CreateAccountText>Voltar para o login</CreateAccountText>
+                </CreateAccount>
+            )}
         </>
     )
 }
 
-export default SignIn
-
+export default SignUp

@@ -1,8 +1,7 @@
-import React, { createContext, useCallback, useContext, useState, useEffect } from 'react'
+import React, { createContext, useCallback, useContext, useState } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import api from '../services/api'
 import useEffectAsync from '../utils/useEffectAsync'
-
 
 interface User {
     id: string
@@ -25,6 +24,7 @@ interface AuthParams {
     user: User
     signIn(credentials: SignInProps): Promise<void>
     signOut(): void
+    updateUser(user: User): Promise<void>
     loading: boolean
 }
 
@@ -36,13 +36,14 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     async function loadStorage() {
         const [token, user] = await AsyncStorage.multiGet([
-            '@GoBarber/token', '@GoBarber/user'
+            '@GoBarber/token',
+            '@GoBarber/user'
         ])
 
         if (token[1] && user[1]) {
             api.defaults.headers.authorization = `Bearer ${token[1]}`
 
-            setData({ token: token[1], user: JSON.parse(user[1])})
+            setData({ token: token[1], user: JSON.parse(user[1]) })
             setLoading(true)
         }
 
@@ -74,8 +75,22 @@ export const AuthProvider: React.FC = ({ children }) => {
         setData({} as AuthData)
     }, [])
 
+    const updateUser = useCallback(
+        async (user: User) => {
+            await AsyncStorage.setItem('@GoBarber:user', JSON.stringify(user))
+
+            setData({
+                token: data.token,
+                user
+            })
+        },
+        [data.token]
+    )
+
     return (
-        <AuthContext.Provider value={{ user: data.user, signIn, signOut, loading }}>
+        <AuthContext.Provider
+            value={{ user: data.user, signIn, signOut, updateUser, loading }}
+        >
             {children}
         </AuthContext.Provider>
     )
